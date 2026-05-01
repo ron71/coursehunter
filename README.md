@@ -82,14 +82,13 @@ An enterprise-grade, cloud-native microservices platform for online education. B
 ## Quick Start
 
 ```bash
-# Build all services
-./mvnw clean package -DskipTests
-
-# Run locally with Docker Compose
-docker-compose up
-
-# Deploy to Kubernetes
-kubectl apply -f kubernetes/
+make build      # Build all services (skip tests)
+make install    # Build all services and run tests
+make clean      # Wipe all build artifacts
+make test       # Run tests only
+make run        # Start all services with Docker Compose
+make stop       # Stop all running containers
+make logs       # Tail logs from all containers
 ```
 
 ---

@@ -237,6 +237,8 @@ spring:
 
 ## 3. Kafka Topics
 
+Each domain event has its own dedicated topic — not a single shared bus. This gives independent scaling per topic, clean service ownership, and safe replay without reprocessing unrelated events.
+
 | Topic | Producer | Consumers |
 |---|---|---|
 | `enrollment.created` | student-service | payment-service, audit-service |
@@ -245,6 +247,13 @@ spring:
 | `seat.allocated` | course-service | student-service |
 | `enrollment.completed` | student-service | notification-service, audit-service |
 | `grade.updated` | gradebook-service | gradebook-projector, audit-service |
+
+**Why one topic per event (not a single shared topic):**
+- **Independent scaling** — partitions on `enrollment.created` can be tuned separately from `grade.updated`
+- **No message filtering** — consumers only subscribe to topics they need; nothing is discarded
+- **Backpressure isolation** — a slow consumer on one topic doesn't block unrelated services
+- **Replay safety** — individual topics can be replayed for debugging without reprocessing unrelated events
+- **Clear ownership** — the producing service owns its topic contract explicitly
 
 ---
 
